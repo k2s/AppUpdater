@@ -9,17 +9,23 @@ public class Version implements Comparable<Version> {
         return this.version;
     }
 
-    public Version(@NonNull final String version) throws Exception
-    {
+    public Version(@NonNull final String version) throws Exception {
         this(version, false);
     }
 
-    public Version(@NonNull final String version, boolean firstRemoveDashedParts) throws Exception
-    {
+    public Version(@NonNull final String version, boolean firstRemoveDashedParts) throws Exception {
         String ver = version;
         if (firstRemoveDashedParts) {
+            // eg. `b2d7451f-customUpdater-20.0101.122655-debug` trimmed: ``
             String[] parts = ver.split("-");
-            ver = parts[parts.length-1];
+            for (int i = parts.length - 1; i >= 0; i--) {
+                if (parts[i].matches("^[.0-9]+$")) {
+                    this.version = parts[i];
+                    return;
+                }
+            }
+            this.version = "";
+            return;
         }
 
         String trimmedVersion = ver.replaceAll("[^0-9?!\\.]", "");
