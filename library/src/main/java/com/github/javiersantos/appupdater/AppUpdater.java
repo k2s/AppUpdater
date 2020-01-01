@@ -18,8 +18,10 @@ import com.github.javiersantos.appupdater.enums.UpdateFrom;
 import com.github.javiersantos.appupdater.interfaces.IAppUpdater;
 import com.github.javiersantos.appupdater.objects.GitHub;
 import com.github.javiersantos.appupdater.objects.Update;
+import com.github.javiersantos.appupdater.objects.Version;
 
 public class AppUpdater implements IAppUpdater {
+    private Class<Version> versionClass;
     private Context context;
     private LibraryPreferences libraryPreferences;
     private Display display;
@@ -48,6 +50,7 @@ public class AppUpdater implements IAppUpdater {
         this.showEvery = 1;
         this.showAppUpdated = false;
         this.iconResId = R.drawable.ic_stat_name;
+        this.versionClass = Version.class;
 
         // Dialog
         this.titleUpdate = context.getResources().getString(R.string.appupdater_update_available);
@@ -56,6 +59,11 @@ public class AppUpdater implements IAppUpdater {
         this.btnDismiss = context.getResources().getString(R.string.appupdater_btn_dismiss);
         this.btnDisable = context.getResources().getString(R.string.appupdater_btn_disable);
         this.isDialogCancelable = true;
+    }
+
+    public AppUpdater setVarsionClass(Class myClass) {
+        this.versionClass = myClass;
+        return this;
     }
 
     @Override
@@ -335,7 +343,7 @@ public class AppUpdater implements IAppUpdater {
                 }
 
                 Update installedUpdate = new Update(UtilsLibrary.getAppInstalledVersion(context), UtilsLibrary.getAppInstalledVersionCode(context));
-                if (UtilsLibrary.isUpdateAvailable(installedUpdate, update)) {
+                if (UtilsLibrary.isUpdateAvailable(installedUpdate, update, versionClass)) {
                     Integer successfulChecks = libraryPreferences.getSuccessfulChecks();
                     if (UtilsLibrary.isAbleToShow(successfulChecks, showEvery)) {
                         switch (display) {

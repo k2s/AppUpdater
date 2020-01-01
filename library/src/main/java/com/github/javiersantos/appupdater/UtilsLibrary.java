@@ -69,14 +69,18 @@ class UtilsLibrary {
     }
 
     static Boolean isUpdateAvailable(Update installedVersion, Update latestVersion) {
+        return isUpdateAvailable(installedVersion, latestVersion, Version.class);
+    }
+
+    static Boolean isUpdateAvailable(Update installedVersion, Update latestVersion, Class MyVersion) {
         if (latestVersion.getLatestVersionCode() != null && latestVersion.getLatestVersionCode() > 0) {
             return latestVersion.getLatestVersionCode() > installedVersion.getLatestVersionCode();
         } else {
             if (!TextUtils.equals(installedVersion.getLatestVersion(), "0.0.0.0") && !TextUtils.equals(latestVersion.getLatestVersion(), "0.0.0.0")) {
                 try
                 {
-                    final Version installed = new Version(installedVersion.getLatestVersion());
-                    final Version latest = new Version(latestVersion.getLatestVersion());
+                    final Version installed = (Version) MyVersion.getDeclaredConstructor(String.class).newInstance(installedVersion.getLatestVersion());
+                    final Version latest = (Version) MyVersion.getDeclaredConstructor(String.class).newInstance(latestVersion.getLatestVersion());
                     return installed.compareTo(latest) < 0;
                 } catch (Exception e)
                 {

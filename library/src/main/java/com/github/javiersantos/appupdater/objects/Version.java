@@ -3,7 +3,7 @@ package com.github.javiersantos.appupdater.objects;
 import android.support.annotation.NonNull;
 
 public class Version implements Comparable<Version> {
-    private String version;
+    protected String version;
 
     public final String get() {
         return this.version;
