@@ -21,7 +21,6 @@ import com.github.javiersantos.appupdater.objects.Update;
 import com.github.javiersantos.appupdater.objects.Version;
 
 public class AppUpdater implements IAppUpdater {
-    private Class<Version> versionClass;
     private Context context;
     private LibraryPreferences libraryPreferences;
     private Display display;
@@ -40,6 +39,7 @@ public class AppUpdater implements IAppUpdater {
     private AlertDialog alertDialog;
     private Snackbar snackbar;
     private Boolean isDialogCancelable;
+    private boolean firstRemoveDashedParts = false;
 
     public AppUpdater(Context context) {
         this.context = context;
@@ -50,7 +50,6 @@ public class AppUpdater implements IAppUpdater {
         this.showEvery = 1;
         this.showAppUpdated = false;
         this.iconResId = R.drawable.ic_stat_name;
-        this.versionClass = Version.class;
 
         // Dialog
         this.titleUpdate = context.getResources().getString(R.string.appupdater_update_available);
@@ -61,8 +60,8 @@ public class AppUpdater implements IAppUpdater {
         this.isDialogCancelable = true;
     }
 
-    public AppUpdater setVarsionClass(Class myClass) {
-        this.versionClass = myClass;
+    public AppUpdater removeDashedParts() {
+        this.firstRemoveDashedParts = true;
         return this;
     }
 
@@ -343,7 +342,7 @@ public class AppUpdater implements IAppUpdater {
                 }
 
                 Update installedUpdate = new Update(UtilsLibrary.getAppInstalledVersion(context), UtilsLibrary.getAppInstalledVersionCode(context));
-                if (UtilsLibrary.isUpdateAvailable(installedUpdate, update, versionClass)) {
+                if (UtilsLibrary.isUpdateAvailable(installedUpdate, update, firstRemoveDashedParts)) {
                     Integer successfulChecks = libraryPreferences.getSuccessfulChecks();
                     if (UtilsLibrary.isAbleToShow(successfulChecks, showEvery)) {
                         switch (display) {

@@ -11,7 +11,18 @@ public class Version implements Comparable<Version> {
 
     public Version(@NonNull final String version) throws Exception
     {
-        String trimmedVersion = version.replaceAll("[^0-9?!\\.]", "");
+        this(version, false);
+    }
+
+    public Version(@NonNull final String version, boolean firstRemoveDashedParts) throws Exception
+    {
+        String ver = version;
+        if (firstRemoveDashedParts) {
+            String[] parts = ver.split("-");
+            ver = parts[parts.length-1];
+        }
+
+        String trimmedVersion = ver.replaceAll("[^0-9?!\\.]", "");
         // replace all empty version number-parts with zeros
         trimmedVersion = trimmedVersion.replaceAll("\\.(\\.|$)", "\\.0$1");
         if (!trimmedVersion.matches("[0-9]+(\\.[0-9]+)*"))
